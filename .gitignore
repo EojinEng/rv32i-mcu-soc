@@ -1,0 +1,19 @@
+# Vivado
+vivado/
+
+# Simulation
+**/xsim.dir/
+*.pb
+*.jou
+*.log
+*.str
+*.wdb
+*.wcfg
+
+# Temporary
+*.tmp
+*.bak
+
+# OS
+.DS_Store
+Thumbs.db
