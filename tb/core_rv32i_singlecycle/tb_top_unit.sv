@@ -35,7 +35,7 @@ module tb_top_rv32i_single;
     initial begin
     // 1. 메모리 초기화 (파일 읽어오기)
     // 경로(path)는 test.mem 파일이 있는 위치에 맞게 수정해야 합니다.
-    $readmemh("test_Rtype.mem", instr_mem);
+    $readmemh("test_Itype.mem", instr_mem);
 
     // 2. 시스템 리셋 및 클럭 구동
     clk = 0;

@@ -8,6 +8,14 @@ RV32I ISA를 지원하는 Single-Cycle Processor를 SystemVerilog로 구현하�
 
 ---
 
+# Block Diagram
+
+RV32I Single-Cycle Processor의 전체 데이터패스와 제어 구조는 아래와 같다.
+
+![Block Diagram](images/blockdiagram.png)
+
+---
+
 # Simulation
 
 ## R-Type Instruction Test
@@ -61,7 +69,7 @@ R-Type 명령어의 ALU 제어 신호와 연산 결과가 RISC-V 명세와 일�
 
 ### Simulation Result
 
-> 아래 파형에서 명령어에 따라 `ALU_CONTROL` 신호가 정상적으로 변경되며, `ALU_RESULT`가 기대한 결과와 일치함을 확인하였다.
+> `ALU_CONTROL` 신호가 각 R-Type 명령어에 맞게 정상적으로 변경되며, `ALU_RESULT`가 기대한 결과와 일치함을 확인하였다.
 
 ![R-Type Simulation](images/Rtype_test_1.png)
 
@@ -84,9 +92,56 @@ R-Type 명령어의 ALU 제어 신호와 연산 결과가 RISC-V 명세와 일�
 
 ---
 
+## I-Type Instruction Test
+
+### Test Objective
+
+I-Type ALU Immediate 명령어의 즉시값 처리(Sign Extension), 비교 연산(Signed/Unsigned), 논리 연산 및 Shift 연산이 RISC-V 명세와 일치하는지 검증한다.
+
+---
+
+### Tested Instructions
+
+- ADDI
+- SLTI
+- SLTIU
+- XORI
+- ORI
+- ANDI
+- SLLI
+- SRLI
+- SRAI
+
+---
+
+### Simulation Result
+
+> 즉시값 연산, Signed/Unsigned 비교, Logical Shift 및 Arithmetic Shift가 정상적으로 수행되며, 모든 I-Type ALU 명령어가 기대한 결과와 일치함을 확인하였다.
+
+![I-Type Simulation](images/Itype_test_1.png)
+
+---
+
+### Verification Summary
+
+| Instruction | Result |
+|-------------|:------:|
+| ADDI | ✅ Pass |
+| SLTI | ✅ Pass |
+| SLTIU | ✅ Pass |
+| XORI | ✅ Pass |
+| ORI | ✅ Pass |
+| ANDI | ✅ Pass |
+| SLLI | ✅ Pass |
+| SRLI | ✅ Pass |
+| SRAI | ✅ Pass |
+
+---
+
 ## Next Verification
 
-- [ ] I-Type
+- [x] R-Type
+- [x] I-Type (ALU Immediate)
 - [ ] Load
 - [ ] Store
 - [ ] Branch
