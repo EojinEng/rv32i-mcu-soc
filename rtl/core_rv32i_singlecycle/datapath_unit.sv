@@ -2,45 +2,74 @@
 import rv32i_pkg::*;
 
 module datapath_unit (
-    input               clk,
-    input               reset,
+    input                   clk,
+    input                   reset,
     //instruct signal
-    input        [31:0] instr_data,
+    input            [31:0] instr_data,
+    ////// control_unit //////
     //register control
-    input        [ 2:0] rfwdsrc_sel,
-    input               rf_we,
+    input            [ 2:0] rfwdsrc_sel,
+    input                   rf_we,
     //main alu control
-    input               alusrc_sel,
-    input        [ 3:0] alu_control,
+    input                   alusrc_sel,
+    input            [ 3:0] alu_control,
     //pc control
-    input               jalr_sel,
-    input               branch,
-    input               jump,
+    input                   jalr_sel,
+    input                   branch,
+    ////// data_mem //////
     //data mem input
-    input        [31:0] drdata,
+    input            [31:0] drdata,
     //data mem output
-    output logic [31:0] daddr,
-    output logic [31:0] dwdata,
+    output logic     [31:0] daddr,
+    output logic     [31:0] dwdata,
     //instruct output
-    output logic [31:0] instr_addr
+    output logic     [31:0] instr_addr,
+    input                   jump,
+    // Decoded Instruction Fields
+    output op_code_e        opcode_o,
+    output logic     [ 2:0] funct3_o,
+    output logic     [ 6:0] funct7_o
 );
 
+    //-------------------------------------
+    // Instruction Decode
+    //-------------------------------------
+    op_code_e opcode;
     logic [2:0] funct3;
+    logic [6:0] funct7;
+
+    logic [4:0] rd;
+    logic [4:0] rs1;
+    logic [4:0] rs2;
+
+    assign opcode = op_code_e'(instr_data[6:0]);
+    assign rd     = instr_data[11:7];
+    assign funct3 = instr_data[14:12];
+    assign rs1    = instr_data[19:15];
+    assign rs2    = instr_data[24:20];
+    assign funct7 = instr_data[31:25];
+    //-------------------------------------
+    //-------------------------------------
+
     logic [31:0] rd1, rd2, alu_result, imm_data, alusrc_data;
     logic [31:0] pcalu_4_out, pcalu_imm_out;
     logic [31:0] rf_wd;
     logic b_taken;
 
-    assign funct3 = instr_data[14:12];
-    assign daddr  = alu_result;
-    assign dwdata = rd2;
+    assign opcode_o = opcode;
+    assign funct3_o = funct3;
+    assign funct7_o = funct7;
+
+    //data_mem
+    assign daddr    = alu_result;
+    assign dwdata   = rd2;
 
     register_file U_REGISTER_FILE (
         .clk  (clk),
         .reset(reset),
-        .RA1  (instr_data[19:15]),
-        .RA2  (instr_data[24:20]),
-        .WA   (instr_data[11:7]),
+        .WA   (rd),
+        .RA1  (rs1),
+        .RA2  (rs2),
         .Wdata(rf_wd),
         .rf_we(rf_we),
         .RD1  (rd1),
@@ -48,6 +77,7 @@ module datapath_unit (
     );
 
     rv32i_imm_extender U_IMM_EXTEND (
+        .opcode    (opcode),
         .instr_data(instr_data),
         .imm_data  (imm_data)
     );
@@ -94,16 +124,15 @@ module datapath_unit (
         .alu_imm_out    (pcalu_imm_out),
         .program_counter(instr_addr)
     );
-
 endmodule
 
 module register_file (
     input               clk,
     input               reset,
+    input        [ 4:0] WA,
     input        [ 4:0] RA1,
     input        [ 4:0] RA2,
     input               rf_we,
-    input        [ 4:0] WA,
     input        [31:0] Wdata,
     output logic [31:0] RD1,
     output logic [31:0] RD2
@@ -123,12 +152,10 @@ module register_file (
 endmodule
 
 module rv32i_imm_extender (
-    input        [31:0] instr_data,
-    output logic [31:0] imm_data
+    input  op_code_e        opcode,
+    input            [31:0] instr_data,
+    output logic     [31:0] imm_data
 );
-
-    logic [6:0] opcode;
-    assign opcode = instr_data[6:0];
 
     always_comb begin
         imm_data = '0;
@@ -177,6 +204,7 @@ module rv32i_imm_extender (
                     1'b0
                 };
             end
+            default: imm_data = '0;
         endcase
     end
 endmodule
@@ -256,12 +284,12 @@ module comparator (
 endmodule
 
 module program_counter (
-    input         clk,
-    input         reset,
-    input  [31:0] rs1,
-    input         pcsrc_sel,
-    input         jalr_sel,
-    input  [31:0] imm_data,
+    input               clk,
+    input               reset,
+    input        [31:0] rs1,
+    input               pcsrc_sel,
+    input               jalr_sel,
+    input        [31:0] imm_data,
     output logic [31:0] alu_4_out,
     output logic [31:0] alu_imm_out,
     output logic [31:0] program_counter
@@ -300,7 +328,7 @@ module program_counter (
     pc_register U_PC_REG (
         .clk     (clk),
         .reset   (reset),
-        .data_in (pcsrc_mux_out & 32'hFFFFFFFE ),
+        .data_in (pcsrc_mux_out & 32'hFFFFFFFE),
         .data_out(program_counter)
     );
 
