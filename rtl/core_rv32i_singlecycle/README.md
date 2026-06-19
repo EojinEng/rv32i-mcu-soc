@@ -173,8 +173,8 @@ FFF00113    // addi  x2, x0, -1      ; x2 = -1 (0xFFFFFFFF)
 
 ## Next Verification
 
-- [o] R-Type
-- [o] I-Type (ALU Immediate)
+- [x] R-Type
+- [x] I-Type (ALU Immediate)
 - [ ] Load
 - [ ] Store
 - [ ] Branch
