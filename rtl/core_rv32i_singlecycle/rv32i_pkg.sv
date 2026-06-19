@@ -18,8 +18,6 @@ package rv32i_pkg;
 
     // ==========================================
     // 2. 통합 ALU 연산 코드 정의 (4-bit)
-    // R-type과 I-type은 결국 ALU 입장에서는 똑같은 '덧셈', '기역' 연산입니다.
-    // ADD와 ADDI를 따로 둘 필요 없이, ALU 제어 신호로 통합하는 것이 좋습니다.
     // ==========================================
     typedef enum logic [3:0] {
         ALU_ADD  = 4'b0_000,
@@ -75,6 +73,6 @@ package rv32i_pkg;
         JAL   = 3'b001,
         LUI   = 3'b010,
         AUIPC = 3'b011
-    } op_funct3_t; // 원하는 타입 이름으로 지정
+    } op_funct3_t;
 
 endpackage

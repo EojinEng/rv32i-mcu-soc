@@ -3,17 +3,17 @@ import rv32i_pkg::*;
 
 module control_unit (
     //instruct input
+    input op_code_e opcode,
     input [6:0] funct7,
     input [2:0] funct3,
-    input op_code_e opcode,
 
     //reg file control
     output logic [2:0] rfwdsrc_sel,
     output logic       rf_we,
 
     //main alu control
-    output logic       alusrc_sel,
-    alu_type_e alu_control,
+    output alu_type_e alu_control,
+    output logic      alusrc_sel,
 
     //pc control
     output logic jalr_sel,
@@ -21,7 +21,7 @@ module control_unit (
     output logic jump,
 
     //data mem control
-    output logic       dwe
+    output logic dwe
 );
 
     always_comb begin
@@ -47,7 +47,7 @@ module control_unit (
                 jalr_sel    = 1'b0;
                 branch      = 1'b0;
                 jump        = 1'b0;
-                dwe         = 1'b0;     
+                dwe         = 1'b0;
             end
 
             B_TYPE: begin
@@ -69,7 +69,7 @@ module control_unit (
                 jalr_sel    = 1'b0;
                 branch      = 1'b0;
                 jump        = 1'b0;
-                dwe         = 1'b1;               
+                dwe         = 1'b1;
             end
 
             IL_TYPE: begin
@@ -107,7 +107,7 @@ module control_unit (
                 branch      = 1'b0;
                 jump        = 1'b0;
                 dwe         = 1'b0;
-                
+
             end
 
             UA_TYPE: begin  //rd = pc + imm
@@ -119,7 +119,7 @@ module control_unit (
                 branch      = 1'b0;
                 jump        = 1'b0;
                 dwe         = 1'b0;
-                
+
             end
 
             JL_TYPE: begin  //rd=pc+4 //pc=rs1+imm
@@ -131,7 +131,7 @@ module control_unit (
                 branch      = 1'b0;
                 jump        = 1'b1;
                 dwe         = 1'b0;
-                
+
             end
             J_TYPE: begin  //rd=pc+4 //pc=pc+imm
                 rf_we       = 1'b1;
@@ -141,7 +141,22 @@ module control_unit (
                 jalr_sel    = 1'b0;
                 branch      = 1'b0;
                 jump        = 1'b1;
-                dwe         = 1'b0;            
+                dwe         = 1'b0;
+            end
+
+            default: begin
+                //reg file control
+                rf_we       = 1'b0;
+                rfwdsrc_sel = 3'b000;
+                //main alu control
+                alusrc_sel  = 1'b0;
+                alu_control = ALU_ADD;
+                //pc control
+                jalr_sel    = 1'b0;
+                branch      = 1'b0;
+                jump        = 1'b0;
+                //data mem control
+                dwe         = 1'b0;
             end
         endcase
     end

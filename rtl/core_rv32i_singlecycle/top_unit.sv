@@ -10,31 +10,27 @@ module top_unit (
     output logic [31:0] instr_addr,  // PC (Program Counter) 값을 밖으로 출력
 
     // 2. Data Memory Interface (데이터 메모리용 핀)
-    input        [31:0] dmem_rdata, // 메모리에서 읽어온 데이터 (Load 명령어용)
-    output logic        dwe,  // 메모리 쓰기 신호 (MemWrite 제어신호)
-    output logic [31:0] dmem_addr,  // ALU 연산 결과 등으로 나온 메모리 주소
-    output logic [31:0] dmem_wdata  // 메모리에 저장할 데이터 (rs2 값)
+    input        [31:0] drdata, // 메모리에서 읽어온 데이터 (Load 명령어용)
+    output logic dwe,  // 메모리 쓰기 신호 (MemWrite 제어신호)
+    output logic [31:0] daddr,  // ALU 연산 결과 등으로 나온 메모리 주소
+    output logic [31:0] dwdata  // 메모리에 저장할 데이터 (rs2 값)
 );
 
-    logic [2:0] funct3;
-    logic [6:0] funct7; 
-    op_code_e  opcode;
-    
-    assign funct3 = instr_data[14:12];
-    assign funct7 = instr_data[31:25];
-    assign opcode = op_code_e'(instr_data[6:0]);
+    op_code_e        opcode;
+    logic      [2:0] funct3;
+    logic      [6:0] funct7;
 
-    wire [2:0]  rfwdsrc_sel;
-    wire        rf_we;
-    wire [3:0]  alu_control;
-    wire        alusrc_sel;
-    wire jalr_sel, branch, jump;
+    logic      [2:0] rfwdsrc_sel;
+    logic            rf_we;
+    alu_type_e       alu_control;
+    logic            alusrc_sel;
+    logic jalr_sel, branch, jump;
 
     control_unit U_CONTROLUNIT (
         //instruct input
-        .funct7(funct7),
-        .funct3(funct3),
         .opcode(opcode),
+        .funct3(funct3),
+        .funct7(funct7),
 
         //reg file control
         .rfwdsrc_sel(rfwdsrc_sel),
@@ -74,14 +70,19 @@ module top_unit (
         .jump    (jump),
 
         //data mem input
-        .drdata(dmem_rdata),
+        .drdata(drdata),
 
         //data mem output
-        .daddr (dmem_addr),
-        .dwdata(dmem_wdata),
+        .daddr (daddr),
+        .dwdata(dwdata),
 
         //instruct output
-        .instr_addr(instr_addr)
+        .instr_addr(instr_addr),
+
+        // Decoded Instruction Fields
+        .opcode_o(opcode),
+        .funct3_o(funct3),
+        .funct7_o(funct7)
     );
 
 endmodule

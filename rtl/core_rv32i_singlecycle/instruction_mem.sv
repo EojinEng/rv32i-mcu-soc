@@ -10,7 +10,7 @@ module instruction_mem (
     logic [31:0] rom[0:255];
 
     initial begin
-        $readmemh("APB_GPI.mem", rom);
+        $readmemh("test_Itype.mem", rom);
     end
 
     assign instr_data = rom[instr_addr[9:2]];
