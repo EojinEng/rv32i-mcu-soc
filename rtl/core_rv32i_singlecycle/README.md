@@ -100,23 +100,56 @@ I-Type ALU Immediate 명령어의 즉시값 처리(Sign Extension), 비교 연�
 
 ---
 
-### Tested Instructions
+### Test Program
 
-- ADDI
-- SLTI
-- SLTIU
-- XORI
-- ORI
-- ANDI
-- SLLI
-- SRLI
-- SRAI
+```assembly
+00500093    // addi  x1, x0, 5       ; x1 = 5
+FFF00113    // addi  x2, x0, -1      ; x2 = -1 (0xFFFFFFFF)
+
+00A08193    // addi  x3, x1, 10      ; x3 = 15
+
+0010A213    // slti  x4, x1, 1       ; x4 = (5 < 1) ? 1 : 0 = 0
+00312293    // slti  x5, x2, 3       ; x5 = (-1 < 3) ? 1 : 0 = 1
+
+0010B313    // sltiu x6, x1, 1       ; x6 = (5 < 1) ? 1 : 0 = 0
+00313393    // sltiu x7, x2, 3       ; x7 = (0xFFFFFFFF < 3) ? 1 : 0 = 0
+
+00F0C413    // xori  x8, x1, 15      ; x8 = 5 ^ 15 = 10
+00A0E493    // ori   x9, x1, 10      ; x9 = 5 | 10 = 15
+00C0F513    // andi  x10,x1, 12      ; x10 = 5 & 12 = 4
+
+00209593    // slli  x11,x1, 2       ; x11 = 5 << 2 = 20
+00215613    // srli  x12,x2, 2       ; x12 = 0xFFFFFFFF >> 2 = 0x3FFFFFFF
+40215693    // srai  x13,x2, 2       ; x13 = 0xFFFFFFFF >>> 2 = 0xFFFFFFFF
+
+00000013    // nop
+00000013    // nop
+00000013    // nop
+```
+
+---
+
+### Expected Result
+
+| Instruction | Operand | Expected Result |
+|-------------|---------|----------------:|
+| ADDI  | 5 + 10 | 15 |
+| SLTI  | 5 < 1 | 0 |
+| SLTI  | -1 < 3 | 1 |
+| SLTIU | 5 < 1 (unsigned) | 0 |
+| SLTIU | 0xFFFFFFFF < 3 (unsigned) | 0 |
+| XORI  | 5 ^ 15 | 10 |
+| ORI   | 5 \| 10 | 15 |
+| ANDI  | 5 & 12 | 4 |
+| SLLI  | 5 << 2 | 20 |
+| SRLI  | 0xFFFFFFFF >> 2 | 0x3FFFFFFF |
+| SRAI  | 0xFFFFFFFF >>> 2 | 0xFFFFFFFF |
 
 ---
 
 ### Simulation Result
 
-> 즉시값 연산, Signed/Unsigned 비교, Logical Shift 및 Arithmetic Shift가 정상적으로 수행되며, 모든 I-Type ALU 명령어가 기대한 결과와 일치함을 확인하였다.
+> `ALU_CONTROL` 신호가 각 I-Type 명령어에 맞게 정상적으로 변경되며, 즉시값 처리(Sign Extension), Signed/Unsigned 비교, Shift 연산 및 `ALU_RESULT`가 기대한 결과와 일치함을 확인하였다.
 
 ![I-Type Simulation](images/Itype_test_1.png)
 
@@ -140,8 +173,8 @@ I-Type ALU Immediate 명령어의 즉시값 처리(Sign Extension), 비교 연�
 
 ## Next Verification
 
-- [x] R-Type
-- [x] I-Type (ALU Immediate)
+- [o] R-Type
+- [o] I-Type (ALU Immediate)
 - [ ] Load
 - [ ] Store
 - [ ] Branch
