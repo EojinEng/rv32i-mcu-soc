@@ -11,6 +11,8 @@ module data_mem (
 );
 
     logic [31:0] dmem[0:255];
+    funct3_type_e fuct3_type;
+    assign fuct3_type = funct3_type_e'(funct3);
 
     // s-type (store)
     always_ff @(posedge clk) begin
@@ -47,7 +49,7 @@ module data_mem (
         end
     end
 
-    //word
+    // il-type (load)
     always_comb begin
         drdata = 32'd0;
         case (funct3)

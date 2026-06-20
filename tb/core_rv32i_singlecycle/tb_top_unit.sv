@@ -13,6 +13,7 @@ module tb_top_rv32i_single;
 
     logic          dwe;
     logic   [31:0] daddr;
+    logic   [ 2:0] funct3;
     logic   [31:0] dwdata;
     logic   [31:0] drdata;
 
@@ -24,6 +25,7 @@ module tb_top_rv32i_single;
         .instr_addr(instr_addr),
         .dwe       (dwe),
         .daddr     (daddr),
+        .funct3_o  (funct3),
         .dwdata    (dwdata),
         .drdata    (drdata)
     );
@@ -50,7 +52,7 @@ module tb_top_rv32i_single;
 
         clk   = 0;
         reset = 1;
-        #20; 
+        #20;
         reset = 0;
 
         #200;

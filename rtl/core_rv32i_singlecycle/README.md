@@ -171,14 +171,91 @@ FFF00113    // addi  x2, x0, -1      ; x2 = -1 (0xFFFFFFFF)
 
 ---
 
+## Load / Store Instruction Test
+
+Load/Store 명령어의 메모리 접근(Addressing), 데이터 저장(Store), 데이터 읽기(Load), Sign Extension 및 Zero Extension 동작이 RISC-V 명세와 일치하는지 검증한다.
+
+---
+
+### SW / LW Test
+
+#### Test Objective
+
+`SW`(Store Word)와 `LW`(Load Word) 명령어의 메모리 읽기/쓰기 동작을 검증한다.
+
+또한 `LUI` 명령어를 이용하여 32-bit 상수 값을 생성하고, 생성된 데이터가 메모리에 정상적으로 저장 및 복원되는지 함께 확인한다.
+
+---
+
+#### Test Program
+
+```assembly
+123450B7    // lui   x1, 0x12345        ; x1 = 0x12345000
+67808093    // addi  x1, x1, 0x678      ; x1 = 0x12345678
+
+00102023    // sw    x1, 0(x0)          ; mem[0] = 0x12345678
+00002103    // lw    x2, 0(x0)          ; x2 = 0x12345678
+
+876541B7    // lui   x3, 0x87654        ; x3 = 0x87654000
+32118193    // addi  x3, x3, 0x321      ; x3 = 0x87654321
+
+00302223    // sw    x3, 4(x0)          ; mem[1] = 0x87654321
+00402203    // lw    x4, 4(x0)          ; x4 = 0x87654321
+
+00002283    // lw    x5, 0(x0)          ; x5 = 0x12345678
+
+00000013    // nop
+00000013    // nop
+00000013    // nop
+```
+---
+
+#### Expected Result
+
+| Instruction | Expected Result |
+|-------------|----------------:|
+| LUI + ADDI | x1 = 0x12345678 |
+| SW | mem[0] = 0x12345678 |
+| LW | x2 = 0x12345678 |
+| LUI + ADDI | x3 = 0x87654321 |
+| SW | mem[1] = 0x87654321 |
+| LW | x4 = 0x87654321 |
+| LW | x5 = 0x12345678 |
+
+---
+
+#### Simulation Result
+
+> `LUI`를 이용하여 생성한 32-bit 데이터가 `SW`를 통해 메모리에 정상적으로 저장되었으며, `LW`를 통해 동일한 값이 정확하게 복원되는 것을 확인하였다. 또한 서로 다른 Word 주소에 대한 연속적인 접근 이후에도 기존 데이터가 유지되어 Word 단위 메모리 접근이 정상적으로 동작함을 확인하였다.
+
+<p align="center">
+  <img src="images/sw_lw_test_1.png" width="100%">
+  <img src="images/sw_lw_test_2.png" width="100%">
+</p>
+
+---
+
+#### Verification Summary
+
+| Instruction | Result |
+|-------------|:------:|
+| LUI | ✅ Pass |
+| SW | ✅ Pass |
+| LW | ✅ Pass |
+| Word Addressing | ✅ Pass |
+| Consecutive Word Access | ✅ Pass |
+
+---
+
 ## Next Verification
 
 - [x] R-Type
 - [x] I-Type (ALU Immediate)
-- [ ] Load
-- [ ] Store
+- [x] Load / Store (SW / LW)
+- [ ] Load / Store (SH / LH / LHU)
+- [ ] Load / Store (SB / LB / LBU)
 - [ ] Branch
 - [ ] JAL
 - [ ] JALR
-- [ ] LUI
+- [x] LUI
 - [ ] AUIPC
