@@ -177,6 +177,9 @@ Load/Store 명령어의 메모리 접근(Addressing), 데이터 저장(Store), �
 
 ---
 
+<details>
+<summary><b>SW / LW Test</b></summary>
+
 ### SW / LW Test
 
 #### Test Objective
@@ -246,6 +249,8 @@ Load/Store 명령어의 메모리 접근(Addressing), 데이터 저장(Store), �
 | Consecutive Word Access | ✅ Pass |
 
 ---
+
+</details>
 
 ## Next Verification
 
