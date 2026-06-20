@@ -178,9 +178,9 @@ Load/Store 명령어의 메모리 접근(Addressing), 데이터 저장(Store), �
 ---
 
 <details>
-<summary><b>SW / LW Test</b></summary>
+<summary><strong>SW / LW Test</strong></summary>
 
-### SW / LW Test
+<br>
 
 #### Test Objective
 
