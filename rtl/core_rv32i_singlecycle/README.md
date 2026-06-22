@@ -252,12 +252,88 @@ Load/Store 명령어의 메모리 접근(Addressing), 데이터 저장(Store), �
 
 </details>
 
+<details>
+<summary><strong>SH / LH / LHU Test</strong></summary>
+
+<br>
+
+#### Test Objective
+
+`SH`(Store Halfword), `LH`(Load Halfword), `LHU`(Load Halfword Unsigned) 명령어의 Halfword 단위 메모리 접근(Addressing), 데이터 저장(Store), 데이터 읽기(Load), Sign Extension 및 Zero Extension 동작이 RISC-V 명세와 일치하는지 검증한다.
+
+---
+
+#### Test Program
+
+```assembly
+1234F0B7    // lui   x1, 0x1234F        ; x1 = 0x1234F000
+67808093    // addi  x1, x1, 0x678      ; x1 = 0x1234F678
+
+87658137    // lui   x2, 0x87658        ; x2 = 0x87658000
+32110113    // addi  x2, x2, 0x321      ; x2 = 0x87658321
+
+00101023    // sh    x1, 0(x0)          ; mem[0][15:0]  = 0xF678
+00201123    // sh    x2, 2(x0)          ; mem[0][31:16] = 0x8321
+                                        ; mem[0] = 0x8321F678
+
+00001183    // lh    x3, 0(x0)          ; x3 = 0xFFFFF678
+00201203    // lh    x4, 2(x0)          ; x4 = 0xFFFF8321
+
+00005283    // lhu   x5, 0(x0)          ; x5 = 0x0000F678
+00205303    // lhu   x6, 2(x0)          ; x6 = 0x00008321
+
+00000013    // nop
+00000013    // nop
+00000013    // nop
+```
+
+---
+
+#### Expected Result
+
+| Instruction | Expected Result |
+|-------------|----------------:|
+| LUI + ADDI | x1 = 0x1234F678 |
+| LUI + ADDI | x2 = 0x87658321 |
+| SH | mem[0] = 0x8321F678 |
+| LH | x3 = 0xFFFFF678 |
+| LH | x4 = 0xFFFF8321 |
+| LHU | x5 = 0x0000F678 |
+| LHU | x6 = 0x00008321 |
+
+---
+
+#### Simulation Result
+
+> `SH`를 통해 각 Halfword가 메모리의 하위 16-bit와 상위 16-bit에 정상적으로 저장되었음을 확인하였다. 또한 `LH`는 부호 비트(bit15)를 기준으로 Sign Extension을 수행하여 음수 값으로 복원되었으며, `LHU`는 동일한 데이터를 Zero Extension하여 읽어오는 것을 확인하였다. 이를 통해 Halfword 단위 메모리 접근과 Signed/Unsigned Load 동작이 모두 정상적으로 수행됨을 검증하였다.
+
+<p align="center">
+  <img src="images/sh_lh_lhu_test_1.png" width="100%">
+</p>
+
+---
+
+#### Verification Summary
+
+| Instruction | Result |
+|-------------|:------:|
+| SH | ✅ Pass |
+| LH | ✅ Pass |
+| LHU | ✅ Pass |
+| Halfword Addressing | ✅ Pass |
+| Sign Extension | ✅ Pass |
+| Zero Extension | ✅ Pass |
+
+---
+
+</details>
+
 ## Next Verification
 
 - [x] R-Type
 - [x] I-Type (ALU Immediate)
 - [x] Load / Store (SW / LW)
-- [ ] Load / Store (SH / LH / LHU)
+- [x] Load / Store (SH / LH / LHU)
 - [ ] Load / Store (SB / LB / LBU)
 - [ ] Branch
 - [ ] JAL
