@@ -18,7 +18,12 @@ RV32I Single-Cycle Processor의 전체 데이터패스와 제어 구조는 아�
 
 # Simulation
 
-## R-Type Instruction Test
+</details>
+
+<details>
+<summary><strong>R-Type Instruction Test</strong></summary>
+
+<br>
 
 ### Test Objective
 
@@ -92,7 +97,12 @@ R-Type 명령어의 ALU 제어 신호와 연산 결과가 RISC-V 명세와 일�
 
 ---
 
-## I-Type Instruction Test
+</details>
+
+<details>
+<summary><strong>I-Type Instruction Test</strong></summary>
+
+<br>
 
 ### Test Objective
 
@@ -170,6 +180,8 @@ FFF00113    // addi  x2, x0, -1      ; x2 = -1 (0xFFFFFFFF)
 | SRAI | ✅ Pass |
 
 ---
+
+</details>
 
 ## Load / Store Instruction Test
 
