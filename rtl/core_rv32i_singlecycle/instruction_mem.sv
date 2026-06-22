@@ -10,7 +10,7 @@ module instruction_mem (
     logic [31:0] rom[0:255];
 
     initial begin
-        $readmemh("test_SB_LB_LBU.mem", rom);
+        $readmemh("test_Btype.mem", rom);
     end
 
     assign instr_data = rom[instr_addr[9:2]];

@@ -258,6 +258,10 @@ module comparator (
     input        [31:0] rd2,
     output logic        b_taken
 );
+
+    branch_type_e funct3_type;
+    assign funct3_type = branch_type_e'(funct3);
+
     always_comb begin
         b_taken = 1'b0;
         case (funct3)

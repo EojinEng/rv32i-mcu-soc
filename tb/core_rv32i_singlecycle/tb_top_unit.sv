@@ -55,7 +55,7 @@ module tb_top_rv32i_single;
         #20;
         reset = 0;
 
-        #200;
+        #300;
         $finish;
     end
 endmodule

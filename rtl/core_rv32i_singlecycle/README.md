@@ -430,6 +430,68 @@ Load/Store 명령어의 메모리 접근(Addressing), 데이터 저장(Store), �
 
 </details>
 
+<details>
+<summary><strong>Branch Instruction Test</strong></summary>
+
+<br>
+
+### Test Objective
+
+`BEQ`, `BNE`, `BLT`, `BLTU`, `BGE`, `BGEU` 명령어의 Branch 조건 비교(Signed/Unsigned), Branch Target Address 계산 및 PC 갱신 동작이 RISC-V 명세와 일치하는지 검증한다.
+
+각 Branch 명령어에 대해 **Taken**과 **Not Taken** 두 가지 경우를 모두 수행하여 분기 여부에 따른 PC 변경과 비교 결과를 확인하였다.
+
+---
+
+### Test Program
+
+- Test ROM : `test_Btype.mem`
+
+---
+
+### Expected Result
+
+| Instruction | Expected Result |
+|-------------|-----------------|
+| BEQ | Equal 비교 시 Taken / Not Taken |
+| BNE | Not Equal 비교 시 Taken / Not Taken |
+| BLT | Signed Less Than 비교 |
+| BLTU | Unsigned Less Than 비교 |
+| BGE | Signed Greater or Equal 비교 |
+| BGEU | Unsigned Greater or Equal 비교 |
+| Branch PC | Taken : PC + 8 / Not Taken : PC + 4 |
+
+---
+
+### Simulation Result
+
+> `BEQ`, `BNE`, `BLT`, `BLTU`, `BGE`, `BGEU` 명령어에 대해 **Taken**과 **Not Taken** 시나리오를 모두 검증하였다.  
+> 분기 조건이 만족하는 경우 Branch Target Address(PC+8)로 정상적으로 점프하였으며, 조건이 만족하지 않는 경우 다음 명령어(PC+4)를 정상적으로 수행하였다. 또한 모든 테스트에서 기대한 레지스터 값이 정상적으로 저장되어 Signed/Unsigned 비교와 Branch Control 동작이 RISC-V 명세와 일치함을 확인하였다.
+
+<p align="center">
+  <img src="images/Btype_test_1.png" width="100%">
+  <img src="images/Btype_test_2.png" width="100%">
+</p>
+
+---
+
+### Verification Summary
+
+| Instruction | Taken | Not Taken | Result |
+|-------------|:-----:|:---------:|:------:|
+| BEQ  | ✅ | ✅ | Pass |
+| BNE  | ✅ | ✅ | Pass |
+| BLT  | ✅ | ✅ | Pass |
+| BLTU | ✅ | ✅ | Pass |
+| BGE  | ✅ | ✅ | Pass |
+| BGEU | ✅ | ✅ | Pass |
+| Branch Target (PC + 8) | ✅ | - | Pass |
+| Sequential Execution (PC + 4) | - | ✅ | Pass |
+
+---
+
+</details>
+
 </details>
 
 ## Next Verification
@@ -439,7 +501,7 @@ Load/Store 명령어의 메모리 접근(Addressing), 데이터 저장(Store), �
 - [x] Load / Store (SW / LW)
 - [x] Load / Store (SH / LH / LHU)
 - [x] Load / Store (SB / LB / LBU)
-- [ ] Branch
+- [x] Branch
 - [ ] JAL
 - [ ] JALR
 - [x] LUI
