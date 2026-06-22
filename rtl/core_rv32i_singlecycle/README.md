@@ -183,7 +183,8 @@ FFF00113    // addi  x2, x0, -1      ; x2 = -1 (0xFFFFFFFF)
 
 </details>
 
-## Load / Store Instruction Test
+<details>
+<summary><strong>Load / Store Instruction Test</strong></summary>
 
 Load/Store 명령어의 메모리 접근(Addressing), 데이터 저장(Store), 데이터 읽기(Load), Sign Extension 및 Zero Extension 동작이 RISC-V 명세와 일치하는지 검증한다.
 
@@ -320,7 +321,8 @@ Load/Store 명령어의 메모리 접근(Addressing), 데이터 저장(Store), �
 > `SH`를 통해 각 Halfword가 메모리의 하위 16-bit와 상위 16-bit에 정상적으로 저장되었음을 확인하였다. 또한 `LH`는 부호 비트(bit15)를 기준으로 Sign Extension을 수행하여 음수 값으로 복원되었으며, `LHU`는 동일한 데이터를 Zero Extension하여 읽어오는 것을 확인하였다. 이를 통해 Halfword 단위 메모리 접근과 Signed/Unsigned Load 동작이 모두 정상적으로 수행됨을 검증하였다.
 
 <p align="center">
-  <img src="images/sh_lh_lhu_test_1.png" width="100%">
+  <img src="images/sh_lh_test_1.png" width="100%">
+  <img src="images/sh_lh_test_2.png" width="100%">
 </p>
 
 ---
@@ -407,7 +409,8 @@ Load/Store 명령어의 메모리 접근(Addressing), 데이터 저장(Store), �
 > `SB`를 통해 각 Byte가 메모리의 8-bit 단위 위치에 정상적으로 저장되었음을 확인하였다. 또한 `LB`는 부호 비트(bit7)를 기준으로 Sign Extension을 수행하여 데이터를 읽어왔으며, `LBU`는 동일한 데이터를 Zero Extension하여 읽어오는 것을 확인하였다. 이를 통해 Byte 단위 메모리 접근과 Signed/Unsigned Load 동작이 모두 정상적으로 수행됨을 검증하였다.
 
 <p align="center">
-  <img src="images/sb_lb_lbu_test_1.png" width="100%">
+  <img src="images/sb_lb_test_1.png" width="100%">
+  <img src="images/sb_lb_test_2.png" width="100%">
 </p>
 
 ---
@@ -424,6 +427,8 @@ Load/Store 명령어의 메모리 접근(Addressing), 데이터 저장(Store), �
 | Zero Extension | ✅ Pass |
 
 ---
+
+</details>
 
 </details>
 
