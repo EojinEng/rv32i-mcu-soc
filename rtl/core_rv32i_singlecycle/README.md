@@ -328,13 +328,100 @@ Load/Store 명령어의 메모리 접근(Addressing), 데이터 저장(Store), �
 
 </details>
 
+<details>
+<summary><strong>SB / LB / LBU Test</strong></summary>
+
+<br>
+
+#### Test Objective
+
+`SB`(Store Byte), `LB`(Load Byte), `LBU`(Load Byte Unsigned) 명령어의 Byte 단위 메모리 접근(Addressing), 데이터 저장(Store), 데이터 읽기(Load), Sign Extension 및 Zero Extension 동작이 RISC-V 명세와 일치하는지 검증한다.
+
+---
+
+#### Test Program
+
+```assembly
+0F100093    // addi  x1, x0, 0x0F1      ; x1 = 0x000000F1
+0F200113    // addi  x2, x0, 0x0F2      ; x2 = 0x000000F2
+0F300193    // addi  x3, x0, 0x0F3      ; x3 = 0x000000F3
+0F400213    // addi  x4, x0, 0x0F4      ; x4 = 0x000000F4
+
+00100023    // sb    x1, 0(x0)          ; mem[0][7:0]   = 0xF1
+002000A3    // sb    x2, 1(x0)          ; mem[0][15:8]  = 0xF2
+00300123    // sb    x3, 2(x0)          ; mem[0][23:16] = 0xF3
+004001A3    // sb    x4, 3(x0)          ; mem[0][31:24] = 0xF4
+                                        ; mem[0] = 0xF4F3F2F1
+
+00000283    // lb    x5, 0(x0)          ; x5  = 0xFFFFFFF1
+00100303    // lb    x6, 1(x0)          ; x6  = 0xFFFFFFF2
+00200383    // lb    x7, 2(x0)          ; x7  = 0xFFFFFFF3
+00300403    // lb    x8, 3(x0)          ; x8  = 0xFFFFFFF4
+
+00004483    // lbu   x9, 0(x0)          ; x9  = 0x000000F1
+00104503    // lbu   x10, 1(x0)         ; x10 = 0x000000F2
+00204583    // lbu   x11, 2(x0)         ; x11 = 0x000000F3
+00304603    // lbu   x12, 3(x0)         ; x12 = 0x000000F4
+
+00000013    // nop
+00000013    // nop
+00000013    // nop
+```
+
+---
+
+#### Expected Result
+
+| Instruction | Expected Result |
+|-------------|----------------:|
+| ADDI | x1 = 0x000000F1 |
+| ADDI | x2 = 0x000000F2 |
+| ADDI | x3 = 0x000000F3 |
+| ADDI | x4 = 0x000000F4 |
+| SB | mem[0] = 0xF4F3F2F1 |
+| LB | x5 = 0xFFFFFFF1 |
+| LB | x6 = 0xFFFFFFF2 |
+| LB | x7 = 0xFFFFFFF3 |
+| LB | x8 = 0xFFFFFFF4 |
+| LBU | x9 = 0x000000F1 |
+| LBU | x10 = 0x000000F2 |
+| LBU | x11 = 0x000000F3 |
+| LBU | x12 = 0x000000F4 |
+
+---
+
+#### Simulation Result
+
+> `SB`를 통해 각 Byte가 메모리의 8-bit 단위 위치에 정상적으로 저장되었음을 확인하였다. 또한 `LB`는 부호 비트(bit7)를 기준으로 Sign Extension을 수행하여 데이터를 읽어왔으며, `LBU`는 동일한 데이터를 Zero Extension하여 읽어오는 것을 확인하였다. 이를 통해 Byte 단위 메모리 접근과 Signed/Unsigned Load 동작이 모두 정상적으로 수행됨을 검증하였다.
+
+<p align="center">
+  <img src="images/sb_lb_lbu_test_1.png" width="100%">
+</p>
+
+---
+
+#### Verification Summary
+
+| Instruction | Result |
+|-------------|:------:|
+| SB | ✅ Pass |
+| LB | ✅ Pass |
+| LBU | ✅ Pass |
+| Byte Addressing | ✅ Pass |
+| Sign Extension | ✅ Pass |
+| Zero Extension | ✅ Pass |
+
+---
+
+</details>
+
 ## Next Verification
 
 - [x] R-Type
 - [x] I-Type (ALU Immediate)
 - [x] Load / Store (SW / LW)
 - [x] Load / Store (SH / LH / LHU)
-- [ ] Load / Store (SB / LB / LBU)
+- [x] Load / Store (SB / LB / LBU)
 - [ ] Branch
 - [ ] JAL
 - [ ] JALR
