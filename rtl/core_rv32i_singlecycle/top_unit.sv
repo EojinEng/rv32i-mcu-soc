@@ -12,13 +12,16 @@ module top_unit (
     // 2. Data Memory Interface (데이터 메모리용 핀)
     input        [31:0] drdata, // 메모리에서 읽어온 데이터 (Load 명령어용)
     output logic dwe,  // 메모리 쓰기 신호 (MemWrite 제어신호)
+    output logic [2:0] funct3_o,
     output logic [31:0] daddr,  // ALU 연산 결과 등으로 나온 메모리 주소
     output logic [31:0] dwdata  // 메모리에 저장할 데이터 (rs2 값)
+
 );
 
-    op_code_e        opcode;
-    logic      [2:0] funct3;
-    logic      [6:0] funct7;
+    op_code_e       opcode;
+    logic     [2:0] funct3;
+    logic     [6:0] funct7;
+    assign funct3_o = funct3;
 
     logic      [2:0] rfwdsrc_sel;
     logic            rf_we;

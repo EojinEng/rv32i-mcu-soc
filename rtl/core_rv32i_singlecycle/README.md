@@ -18,7 +18,12 @@ RV32I Single-Cycle Processor의 전체 데이터패스와 제어 구조는 아�
 
 # Simulation
 
-## R-Type Instruction Test
+</details>
+
+<details>
+<summary><strong>R-Type Instruction Test</strong></summary>
+
+<br>
 
 ### Test Objective
 
@@ -92,7 +97,12 @@ R-Type 명령어의 ALU 제어 신호와 연산 결과가 RISC-V 명세와 일�
 
 ---
 
-## I-Type Instruction Test
+</details>
+
+<details>
+<summary><strong>I-Type Instruction Test</strong></summary>
+
+<br>
 
 ### Test Objective
 
@@ -171,14 +181,417 @@ FFF00113    // addi  x2, x0, -1      ; x2 = -1 (0xFFFFFFFF)
 
 ---
 
+</details>
+
+<details>
+<summary><strong>Load / Store Instruction Test</strong></summary>
+
+Load/Store 명령어의 메모리 접근(Addressing), 데이터 저장(Store), 데이터 읽기(Load), Sign Extension 및 Zero Extension 동작이 RISC-V 명세와 일치하는지 검증한다.
+
+---
+
+<details>
+<summary><strong>SW / LW Test</strong></summary>
+
+<br>
+
+#### Test Objective
+
+`SW`(Store Word)와 `LW`(Load Word) 명령어의 메모리 읽기/쓰기 동작을 검증한다.
+
+또한 `LUI` 명령어를 이용하여 32-bit 상수 값을 생성하고, 생성된 데이터가 메모리에 정상적으로 저장 및 복원되는지 함께 확인한다.
+
+---
+
+#### Test Program
+
+```assembly
+123450B7    // lui   x1, 0x12345        ; x1 = 0x12345000
+67808093    // addi  x1, x1, 0x678      ; x1 = 0x12345678
+
+00102023    // sw    x1, 0(x0)          ; mem[0] = 0x12345678
+00002103    // lw    x2, 0(x0)          ; x2 = 0x12345678
+
+876541B7    // lui   x3, 0x87654        ; x3 = 0x87654000
+32118193    // addi  x3, x3, 0x321      ; x3 = 0x87654321
+
+00302223    // sw    x3, 4(x0)          ; mem[1] = 0x87654321
+00402203    // lw    x4, 4(x0)          ; x4 = 0x87654321
+
+00002283    // lw    x5, 0(x0)          ; x5 = 0x12345678
+
+00000013    // nop
+00000013    // nop
+00000013    // nop
+```
+---
+
+#### Expected Result
+
+| Instruction | Expected Result |
+|-------------|----------------:|
+| LUI + ADDI | x1 = 0x12345678 |
+| SW | mem[0] = 0x12345678 |
+| LW | x2 = 0x12345678 |
+| LUI + ADDI | x3 = 0x87654321 |
+| SW | mem[1] = 0x87654321 |
+| LW | x4 = 0x87654321 |
+| LW | x5 = 0x12345678 |
+
+---
+
+#### Simulation Result
+
+> `LUI`를 이용하여 생성한 32-bit 데이터가 `SW`를 통해 메모리에 정상적으로 저장되었으며, `LW`를 통해 동일한 값이 정확하게 복원되는 것을 확인하였다. 또한 서로 다른 Word 주소에 대한 연속적인 접근 이후에도 기존 데이터가 유지되어 Word 단위 메모리 접근이 정상적으로 동작함을 확인하였다.
+
+<p align="center">
+  <img src="images/sw_lw_test_1.png" width="100%">
+  <img src="images/sw_lw_test_2.png" width="100%">
+</p>
+
+---
+
+#### Verification Summary
+
+| Instruction | Result |
+|-------------|:------:|
+| LUI | ✅ Pass |
+| SW | ✅ Pass |
+| LW | ✅ Pass |
+| Word Addressing | ✅ Pass |
+| Consecutive Word Access | ✅ Pass |
+
+---
+
+</details>
+
+<details>
+<summary><strong>SH / LH / LHU Test</strong></summary>
+
+<br>
+
+#### Test Objective
+
+`SH`(Store Halfword), `LH`(Load Halfword), `LHU`(Load Halfword Unsigned) 명령어의 Halfword 단위 메모리 접근(Addressing), 데이터 저장(Store), 데이터 읽기(Load), Sign Extension 및 Zero Extension 동작이 RISC-V 명세와 일치하는지 검증한다.
+
+---
+
+#### Test Program
+
+```assembly
+1234F0B7    // lui   x1, 0x1234F        ; x1 = 0x1234F000
+67808093    // addi  x1, x1, 0x678      ; x1 = 0x1234F678
+
+87658137    // lui   x2, 0x87658        ; x2 = 0x87658000
+32110113    // addi  x2, x2, 0x321      ; x2 = 0x87658321
+
+00101023    // sh    x1, 0(x0)          ; mem[0][15:0]  = 0xF678
+00201123    // sh    x2, 2(x0)          ; mem[0][31:16] = 0x8321
+                                        ; mem[0] = 0x8321F678
+
+00001183    // lh    x3, 0(x0)          ; x3 = 0xFFFFF678
+00201203    // lh    x4, 2(x0)          ; x4 = 0xFFFF8321
+
+00005283    // lhu   x5, 0(x0)          ; x5 = 0x0000F678
+00205303    // lhu   x6, 2(x0)          ; x6 = 0x00008321
+
+00000013    // nop
+00000013    // nop
+00000013    // nop
+```
+
+---
+
+#### Expected Result
+
+| Instruction | Expected Result |
+|-------------|----------------:|
+| LUI + ADDI | x1 = 0x1234F678 |
+| LUI + ADDI | x2 = 0x87658321 |
+| SH | mem[0] = 0x8321F678 |
+| LH | x3 = 0xFFFFF678 |
+| LH | x4 = 0xFFFF8321 |
+| LHU | x5 = 0x0000F678 |
+| LHU | x6 = 0x00008321 |
+
+---
+
+#### Simulation Result
+
+> `SH`를 통해 각 Halfword가 메모리의 하위 16-bit와 상위 16-bit에 정상적으로 저장되었음을 확인하였다. 또한 `LH`는 부호 비트(bit15)를 기준으로 Sign Extension을 수행하여 음수 값으로 복원되었으며, `LHU`는 동일한 데이터를 Zero Extension하여 읽어오는 것을 확인하였다. 이를 통해 Halfword 단위 메모리 접근과 Signed/Unsigned Load 동작이 모두 정상적으로 수행됨을 검증하였다.
+
+<p align="center">
+  <img src="images/sh_lh_test_1.png" width="100%">
+  <img src="images/sh_lh_test_2.png" width="100%">
+</p>
+
+---
+
+#### Verification Summary
+
+| Instruction | Result |
+|-------------|:------:|
+| SH | ✅ Pass |
+| LH | ✅ Pass |
+| LHU | ✅ Pass |
+| Halfword Addressing | ✅ Pass |
+| Sign Extension | ✅ Pass |
+| Zero Extension | ✅ Pass |
+
+---
+
+</details>
+
+<details>
+<summary><strong>SB / LB / LBU Test</strong></summary>
+
+<br>
+
+#### Test Objective
+
+`SB`(Store Byte), `LB`(Load Byte), `LBU`(Load Byte Unsigned) 명령어의 Byte 단위 메모리 접근(Addressing), 데이터 저장(Store), 데이터 읽기(Load), Sign Extension 및 Zero Extension 동작이 RISC-V 명세와 일치하는지 검증한다.
+
+---
+
+#### Test Program
+
+```assembly
+0F100093    // addi  x1, x0, 0x0F1      ; x1 = 0x000000F1
+0F200113    // addi  x2, x0, 0x0F2      ; x2 = 0x000000F2
+0F300193    // addi  x3, x0, 0x0F3      ; x3 = 0x000000F3
+0F400213    // addi  x4, x0, 0x0F4      ; x4 = 0x000000F4
+
+00100023    // sb    x1, 0(x0)          ; mem[0][7:0]   = 0xF1
+002000A3    // sb    x2, 1(x0)          ; mem[0][15:8]  = 0xF2
+00300123    // sb    x3, 2(x0)          ; mem[0][23:16] = 0xF3
+004001A3    // sb    x4, 3(x0)          ; mem[0][31:24] = 0xF4
+                                        ; mem[0] = 0xF4F3F2F1
+
+00000283    // lb    x5, 0(x0)          ; x5  = 0xFFFFFFF1
+00100303    // lb    x6, 1(x0)          ; x6  = 0xFFFFFFF2
+00200383    // lb    x7, 2(x0)          ; x7  = 0xFFFFFFF3
+00300403    // lb    x8, 3(x0)          ; x8  = 0xFFFFFFF4
+
+00004483    // lbu   x9, 0(x0)          ; x9  = 0x000000F1
+00104503    // lbu   x10, 1(x0)         ; x10 = 0x000000F2
+00204583    // lbu   x11, 2(x0)         ; x11 = 0x000000F3
+00304603    // lbu   x12, 3(x0)         ; x12 = 0x000000F4
+
+00000013    // nop
+00000013    // nop
+00000013    // nop
+```
+
+---
+
+#### Expected Result
+
+| Instruction | Expected Result |
+|-------------|----------------:|
+| ADDI | x1 = 0x000000F1 |
+| ADDI | x2 = 0x000000F2 |
+| ADDI | x3 = 0x000000F3 |
+| ADDI | x4 = 0x000000F4 |
+| SB | mem[0] = 0xF4F3F2F1 |
+| LB | x5 = 0xFFFFFFF1 |
+| LB | x6 = 0xFFFFFFF2 |
+| LB | x7 = 0xFFFFFFF3 |
+| LB | x8 = 0xFFFFFFF4 |
+| LBU | x9 = 0x000000F1 |
+| LBU | x10 = 0x000000F2 |
+| LBU | x11 = 0x000000F3 |
+| LBU | x12 = 0x000000F4 |
+
+---
+
+#### Simulation Result
+
+> `SB`를 통해 각 Byte가 메모리의 8-bit 단위 위치에 정상적으로 저장되었음을 확인하였다. 또한 `LB`는 부호 비트(bit7)를 기준으로 Sign Extension을 수행하여 데이터를 읽어왔으며, `LBU`는 동일한 데이터를 Zero Extension하여 읽어오는 것을 확인하였다. 이를 통해 Byte 단위 메모리 접근과 Signed/Unsigned Load 동작이 모두 정상적으로 수행됨을 검증하였다.
+
+<p align="center">
+  <img src="images/sb_lb_test_1.png" width="100%">
+  <img src="images/sb_lb_test_2.png" width="100%">
+</p>
+
+---
+
+#### Verification Summary
+
+| Instruction | Result |
+|-------------|:------:|
+| SB | ✅ Pass |
+| LB | ✅ Pass |
+| LBU | ✅ Pass |
+| Byte Addressing | ✅ Pass |
+| Sign Extension | ✅ Pass |
+| Zero Extension | ✅ Pass |
+
+---
+</details>
+
+</details>
+
+<details>
+<summary><strong>Branch Instruction Test</strong></summary>
+
+<br>
+
+### Test Objective
+
+`BEQ`, `BNE`, `BLT`, `BLTU`, `BGE`, `BGEU` 명령어의 Branch 조건 비교(Signed/Unsigned), Branch Target Address 계산 및 PC 갱신 동작이 RISC-V 명세와 일치하는지 검증한다.
+
+각 Branch 명령어에 대해 **Taken**과 **Not Taken** 두 가지 경우를 모두 수행하여 분기 여부에 따른 PC 변경과 비교 결과를 확인하였다.
+
+---
+
+### Test Program
+
+- Test ROM : `test_Btype.mem`
+
+---
+
+### Expected Result
+
+| Instruction | Expected Result |
+|-------------|-----------------|
+| BEQ | Equal 비교 시 Taken / Not Taken |
+| BNE | Not Equal 비교 시 Taken / Not Taken |
+| BLT | Signed Less Than 비교 |
+| BLTU | Unsigned Less Than 비교 |
+| BGE | Signed Greater or Equal 비교 |
+| BGEU | Unsigned Greater or Equal 비교 |
+| Branch PC | Taken : PC + 8 / Not Taken : PC + 4 |
+
+---
+
+### Simulation Result
+
+> `BEQ`, `BNE`, `BLT`, `BLTU`, `BGE`, `BGEU` 명령어에 대해 **Taken**과 **Not Taken** 시나리오를 모두 검증하였다.  
+> 분기 조건이 만족하는 경우 Branch Target Address(PC+8)로 정상적으로 점프하였으며, 조건이 만족하지 않는 경우 다음 명령어(PC+4)를 정상적으로 수행하였다. 또한 모든 테스트에서 기대한 레지스터 값이 정상적으로 저장되어 Signed/Unsigned 비교와 Branch Control 동작이 RISC-V 명세와 일치함을 확인하였다.
+
+<p align="center">
+  <img src="images/Btype_test_1.png" width="100%">
+  <img src="images/Btype_test_2.png" width="100%">
+</p>
+
+---
+
+### Verification Summary
+
+| Instruction | Taken | Not Taken | Result |
+|-------------|:-----:|:---------:|:------:|
+| BEQ  | ✅ | ✅ | Pass |
+| BNE  | ✅ | ✅ | Pass |
+| BLT  | ✅ | ✅ | Pass |
+| BLTU | ✅ | ✅ | Pass |
+| BGE  | ✅ | ✅ | Pass |
+| BGEU | ✅ | ✅ | Pass |
+| Branch Target (PC + 8) | ✅ | - | Pass |
+| Sequential Execution (PC + 4) | - | ✅ | Pass |
+
+---
+
+</details>
+
+<details>
+<summary><strong>J-Type / U-Type Instruction Test</strong></summary>
+
+<br>
+
+### Test Objective
+
+`JAL`, `JALR`, `AUIPC` 명령어의 Jump Target Address 계산, Return Address(Link Register) 저장 및 PC Relative Address 생성 동작이 RISC-V 명세와 일치하는지 검증한다.
+
+`JAL`과 `JALR`의 Jump 이후 PC 갱신 및 Link Register 저장 여부를 확인하고, `AUIPC`를 이용한 PC Relative Immediate 연산 결과를 함께 검증하였다.
+
+---
+
+### Test Program
+
+```assembly
+//-----------------------------------------------------
+// AUIPC Test
+//-----------------------------------------------------
+
+00001297    // auipc x5, 0x1
+23428293    // addi  x5, x5, 0x234
+
+//-----------------------------------------------------
+// JAL Test
+//-----------------------------------------------------
+
+008000EF    // jal   x1, JAL_PASS
+
+06300513    // addi  x10, x0, 99        ; Skip
+
+00008593    // JAL_PASS: addi x11, x1, 0
+
+//-----------------------------------------------------
+// JALR Test
+//-----------------------------------------------------
+
+02400113    // addi  x2, x0, 36
+
+000101E7    // jalr  x3, 0(x2)
+
+06300613    // addi  x12, x0, 99        ; Skip
+
+00018693    // JALR_PASS: addi x13, x3, 0
+
+00000013
+00000013
+00000013
+```
+---
+
+### Expected Result
+
+| Instruction | Expected Result |
+|-------------|----------------:|
+| AUIPC | x5 = 0x00001234 |
+| JAL | x1 = PC + 4 |
+| JAL | Skip next instruction |
+| JALR | x3 = PC + 4 |
+| JALR | Jump to register target |
+| JALR | Skip next instruction |
+
+---
+
+### Simulation Result
+
+> `AUIPC`가 현재 PC와 Immediate를 정상적으로 더하여 PC Relative Address를 생성함을 확인하였다. 또한 `JAL`과 `JALR` 모두 Return Address(PC+4)를 지정된 목적 레지스터에 저장한 뒤 목표 주소로 정상적으로 분기하였으며, Jump 대상 사이에 위치한 명령어는 실행되지 않음을 확인하였다. 이를 통해 J-Type 및 U-Type 명령어의 주소 계산과 PC 갱신 동작이 RISC-V 명세와 일치함을 검증하였다.
+
+<p align="center">
+  <img src="images/Jtype_Utype_test_1.png" width="100%">
+</p>
+
+---
+
+### Verification Summary
+
+| Instruction | Result |
+|-------------|:------:|
+| AUIPC | ✅ Pass |
+| JAL | ✅ Pass |
+| JAL Return Address | ✅ Pass |
+| JALR | ✅ Pass |
+| JALR Return Address | ✅ Pass |
+| PC Relative Address | ✅ Pass |
+| Jump Target Address | ✅ Pass |
+
+---
+
+</details>
+
 ## Next Verification
 
 - [x] R-Type
 - [x] I-Type (ALU Immediate)
-- [ ] Load
-- [ ] Store
-- [ ] Branch
-- [ ] JAL
-- [ ] JALR
-- [ ] LUI
-- [ ] AUIPC
+- [x] Load / Store (SW / LW)
+- [x] Load / Store (SH / LH / LHU)
+- [x] Load / Store (SB / LB / LBU)
+- [x] Branch
+- [x] JAL
+- [x] JALR
+- [x] LUI
+- [x] AUIPC

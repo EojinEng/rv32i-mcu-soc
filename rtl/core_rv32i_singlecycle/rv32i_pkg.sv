@@ -47,13 +47,24 @@ package rv32i_pkg;
     // 4. 스토어(Store) 명령어 타입 정의 (3-bit funct3)
     // ==========================================
     typedef enum logic [2:0] {
-        ST_SB  = 3'b000,
-        ST_SH  = 3'b001,
-        ST_SW  = 3'b010
+        ST_SB = 3'b000,
+        ST_SH = 3'b001,
+        ST_SW = 3'b010
     } store_type_e;
 
     // ==========================================
-    // 5. 분기(Branch) 명령어 타입 정의 (3-bit funct3)
+    // 5. 스토어(Store) 명령어 타입 정의 (3-bit funct3)
+    // ==========================================
+    typedef enum logic [2:0] {
+        BITE        = 3'b000,
+        HALF        = 3'b001,
+        WORLD       = 3'b010,
+        USIGNE_BITE = 3'b100,
+        USIGNE_HALF = 3'b101
+    } funct3_type_e;
+
+    // ==========================================
+    // 6. 분기(Branch) 명령어 타입 정의 (3-bit funct3)
     // ==========================================
     typedef enum logic [2:0] {
         BR_BEQ  = 3'b000,
@@ -64,11 +75,11 @@ package rv32i_pkg;
         BR_BGEU = 3'b111
     } branch_type_e;
 
-    // 3비트 크기의 logic 타입을 기반으로 하는 열거형(enum) 정의
+    // 3bit 크기의 logic 타입을 기반으로 하는 열거형(enum) 정의
     typedef enum logic [2:0] {
         // J-type / I-type jump
-        JALR  = 3'b000,
-        
+        JALR = 3'b000,
+
         // U-type & J-type 명령어 구분을 위한 예시 (필요 시 비트값 조정)
         JAL   = 3'b001,
         LUI   = 3'b010,
