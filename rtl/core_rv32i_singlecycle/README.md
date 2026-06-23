@@ -492,6 +492,96 @@ Load/Store 명령어의 메모리 접근(Addressing), 데이터 저장(Store), �
 
 </details>
 
+<details>
+<summary><strong>J-Type / U-Type Instruction Test</strong></summary>
+
+<br>
+
+### Test Objective
+
+`JAL`, `JALR`, `AUIPC` 명령어의 Jump Target Address 계산, Return Address(Link Register) 저장 및 PC Relative Address 생성 동작이 RISC-V 명세와 일치하는지 검증한다.
+
+`JAL`과 `JALR`의 Jump 이후 PC 갱신 및 Link Register 저장 여부를 확인하고, `AUIPC`를 이용한 PC Relative Immediate 연산 결과를 함께 검증하였다.
+
+---
+
+### Test Program
+
+```assembly
+//-----------------------------------------------------
+// AUIPC Test
+//-----------------------------------------------------
+
+00001297    // auipc x5, 0x1
+23428293    // addi  x5, x5, 0x234
+
+//-----------------------------------------------------
+// JAL Test
+//-----------------------------------------------------
+
+008000EF    // jal   x1, JAL_PASS
+
+06300513    // addi  x10, x0, 99        ; Skip
+
+00008593    // JAL_PASS: addi x11, x1, 0
+
+//-----------------------------------------------------
+// JALR Test
+//-----------------------------------------------------
+
+02400113    // addi  x2, x0, 36
+
+000101E7    // jalr  x3, 0(x2)
+
+06300613    // addi  x12, x0, 99        ; Skip
+
+00018693    // JALR_PASS: addi x13, x3, 0
+
+00000013
+00000013
+00000013
+```
+---
+
+### Expected Result
+
+| Instruction | Expected Result |
+|-------------|----------------:|
+| AUIPC | x5 = 0x00001234 |
+| JAL | x1 = PC + 4 |
+| JAL | Skip next instruction |
+| JALR | x3 = PC + 4 |
+| JALR | Jump to register target |
+| JALR | Skip next instruction |
+
+---
+
+### Simulation Result
+
+> `AUIPC`가 현재 PC와 Immediate를 정상적으로 더하여 PC Relative Address를 생성함을 확인하였다. 또한 `JAL`과 `JALR` 모두 Return Address(PC+4)를 지정된 목적 레지스터에 저장한 뒤 목표 주소로 정상적으로 분기하였으며, Jump 대상 사이에 위치한 명령어는 실행되지 않음을 확인하였다. 이를 통해 J-Type 및 U-Type 명령어의 주소 계산과 PC 갱신 동작이 RISC-V 명세와 일치함을 검증하였다.
+
+<p align="center">
+  <img src="images/Jtype_Utype_test_1.png" width="100%">
+</p>
+
+---
+
+### Verification Summary
+
+| Instruction | Result |
+|-------------|:------:|
+| AUIPC | ✅ Pass |
+| JAL | ✅ Pass |
+| JAL Return Address | ✅ Pass |
+| JALR | ✅ Pass |
+| JALR Return Address | ✅ Pass |
+| PC Relative Address | ✅ Pass |
+| Jump Target Address | ✅ Pass |
+
+---
+
+</details>
+
 </details>
 
 ## Next Verification
