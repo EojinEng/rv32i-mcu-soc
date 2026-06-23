@@ -427,6 +427,7 @@ Load/Store 명령어의 메모리 접근(Addressing), 데이터 저장(Store), �
 | Zero Extension | ✅ Pass |
 
 ---
+</details>
 
 </details>
 
@@ -582,8 +583,6 @@ Load/Store 명령어의 메모리 접근(Addressing), 데이터 저장(Store), �
 
 </details>
 
-</details>
-
 ## Next Verification
 
 - [x] R-Type
@@ -592,7 +591,7 @@ Load/Store 명령어의 메모리 접근(Addressing), 데이터 저장(Store), �
 - [x] Load / Store (SH / LH / LHU)
 - [x] Load / Store (SB / LB / LBU)
 - [x] Branch
-- [ ] JAL
-- [ ] JALR
+- [x] JAL
+- [x] JALR
 - [x] LUI
-- [ ] AUIPC
+- [x] AUIPC
