@@ -19,7 +19,7 @@ module top_mcu_soc (
         .instr_data(core_instr_data),
         .instr_addr(core_instr_addr),
         .drdata    (core_drdata),
-        .dwe       (core_dwe),
+        .dwe       (core_dwe), 
         .funct3_o  (core_funct3),
         .daddr     (core_daddr),
         .dwdata    (core_dwdata)
