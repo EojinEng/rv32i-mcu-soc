@@ -1,5 +1,5 @@
 `timescale 1ns / 1ps
-import rv32i_pkg::*;
+import rv32i_pkg::*;  
 
 module top_unit (
     input wire clk,
