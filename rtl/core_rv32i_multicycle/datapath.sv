@@ -2,7 +2,7 @@
 import rv32i_pkg::*;
 
 module datapath (
-    input                   clk,
+    input                   clk, 
     input                   reset,
     //instruct signal
     input            [31:0] instr_data,

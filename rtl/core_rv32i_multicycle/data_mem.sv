@@ -2,8 +2,8 @@
 import rv32i_pkg::*;
 
 module data_mem (
-    input               clk,
-    input               dwe,
+    input               clk, 
+    input               dwe, 
     input        [ 2:0] funct3,
     input        [31:0] daddr,
     input        [31:0] dwdata,
