@@ -2,7 +2,7 @@
 import rv32i_pkg::*;
 
 module control_unit (
-    input logic           clk,
+    input logic           clk, 
     input logic           reset,
     //instruct input
     input op_code_e       opcode,

@@ -5,7 +5,7 @@ package rv32i_pkg;
     // 1. 명령어 오프코드 정의 (7-bit)
     // ==========================================
     typedef enum logic [6:0] {
-        R_TYPE  = 7'b0110011,
+        R_TYPE  = 7'b0110011, 
         S_TYPE  = 7'b0100011,
         IL_TYPE = 7'b0000011,
         I_TYPE  = 7'b0010011,

@@ -8,7 +8,7 @@
 00008593    // JAL_PASS: addi x11, x1, 0 ; x11 = 0x0000000C
 
 // JALR Test
-02000113    // addi  x2,x0,32           ; x2 = JALR_PASS address
+02000113    // addi  x2,x0,32           ; x2 = JALR_PASS address 
 000101E7    // jalr  x3, 0(x2)          ; x3 = 0x0000001C
 06300613    // addi  x12, x0, 99        ; Skip
 00018693    // JALR_PASS: addi x13, x3, 0 ; x13 = 0x00000020

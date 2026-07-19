@@ -6,7 +6,7 @@
 00100023    // sb    x1, 0(x0)          ; mem[0][7:0]   = 0xF1
 002000A3    // sb    x2, 1(x0)          ; mem[0][15:8]  = 0xF2
 00300123    // sb    x3, 2(x0)          ; mem[0][23:16] = 0xF3 
-004001A3    // sb    x4, 3(x0)          ; mem[0][31:24] = 0xF4  ; mem[0] = 0xF4F3F2F1
+004001A3    // sb    x4, 3(x0)          ; mem[0][31:24] = 0xF4  ; mem[0] = 0xF4F3F2F1 
 
 00000283    // lb    x5, 0(x0)          ; x5  = 0xFFFFFFF1 (Sign Extend)
 00100303    // lb    x6, 1(x0)          ; x6  = 0xFFFFFFF2 (Sign Extend)

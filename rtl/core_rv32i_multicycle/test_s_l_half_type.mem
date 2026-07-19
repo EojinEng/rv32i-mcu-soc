@@ -10,7 +10,7 @@
 00001183    // lh    x3, 0(x0)          ; x3 = 0xFFFFF678 (Sign Extend) 
 00201203    // lh    x4, 2(x0)          ; x4 = 0xFFFF8321 (Sign Extend)
 
-00005283    // lhu   x5, 0(x0)          ; x5 = 0x0000F678 (Zero Extend)
+00005283    // lhu   x5, 0(x0)          ; x5 = 0x0000F678 (Zero Extend) 
 00205303    // lhu   x6, 2(x0)          ; x6 = 0x00008321 (Zero Extend)
 
 00000013    // nop

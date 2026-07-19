@@ -3,7 +3,7 @@ import rv32i_pkg::*;
 
 module instruction_mem (
     input  [31:0] instr_addr, 
-    output [31:0] instr_data
+    output [31:0] instr_data 
 );
 
     //rom 256 size

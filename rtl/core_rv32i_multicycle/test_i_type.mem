@@ -15,5 +15,5 @@ FFF00113    // addi  x2, x0, -1      ; x2 = -1 (0xFFFFFFFF)
 40215693    // srai  x13,x2, 2       ; x13 = 0xFFFFFFFF >>> 2
                                    //      = 0xFFFFFFFF
 00000013    // nop
-00000013    // nop
+00000013    // nop 
 00000013    // nop
