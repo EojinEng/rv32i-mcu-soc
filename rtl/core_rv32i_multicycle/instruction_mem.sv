@@ -2,7 +2,7 @@
 import rv32i_pkg::*;
 
 module instruction_mem (
-    input  [31:0] instr_addr,
+    input  [31:0] instr_addr, 
     output [31:0] instr_data
 );
 

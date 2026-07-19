@@ -2,7 +2,7 @@
 00001297    // auipc x5, 0x1            ; x5 = 0x00001000
 23428293    // addi  x5, x5, 0x234      ; x5 = 0x00001234
 
-// JAL Test
+// JAL Test 
 008000EF    // jal   x1, JAL_PASS       ; x1 = 0x0000000C
 06300513    // addi  x10, x0, 99        ; Skip
 00008593    // JAL_PASS: addi x11, x1, 0 ; x11 = 0x0000000C
