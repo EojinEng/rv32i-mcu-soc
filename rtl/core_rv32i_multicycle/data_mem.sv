@@ -2,11 +2,13 @@
 import rv32i_pkg::*;
 
 module data_mem (
-    input               clk, 
-    input               dwe, 
+    input               clk,
+    input               ram_sel,
+    input               dwe,
     input        [ 2:0] funct3,
     input        [31:0] daddr,
     input        [31:0] dwdata,
+    output logic        dready,
     output logic [31:0] drdata
 );
 
@@ -16,7 +18,7 @@ module data_mem (
 
     // s-type (store)
     always_ff @(posedge clk) begin
-        if (dwe) begin
+        if (ram_sel && dwe) begin
             case (funct3)
                 ST_SW: begin
                     dmem[daddr[31:2]] <= dwdata;
@@ -51,6 +53,7 @@ module data_mem (
 
     // il-type (load)
     always_comb begin
+        dready = 1'b1;
         drdata = 32'd0;
         case (funct3)
             LD_LW: begin  // LW (Word)
