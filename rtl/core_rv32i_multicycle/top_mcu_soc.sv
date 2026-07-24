@@ -7,8 +7,7 @@ module top_mcu_soc (
     output      tx
 );
 
-    /////////////////////////////////////////////////////////////////////valid signal 정해야함
-
+    // CPU core
     logic [31:0] core_instr_data;
     logic [31:0] core_instr_addr;
     logic [31:0] core_rdata;
