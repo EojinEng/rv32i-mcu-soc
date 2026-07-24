@@ -2,15 +2,15 @@
 import rv32i_pkg::*;
 
 module instruction_mem (
-    input  [31:0] instr_addr, 
-    output [31:0] instr_data 
+    input  [31:0] instr_addr,
+    output [31:0] instr_data
 );
 
     //rom 256 size
     logic [31:0] rom[0:255];
 
     initial begin
-        $readmemh("test_r_type.mem", rom);
+        $readmemh("test_apb_uart.mem", rom);
     end
 
     assign instr_data = rom[instr_addr[9:2]];
